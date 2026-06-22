@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Rule {
+  id        String    @id
+  name      String
+  type      String
+  query     String
+  priority  String
+  enabled   Boolean   @default(true)
+  createdAt DateTime
+  updatedAt DateTime
+  hotspots  Hotspot[]
+
+  @@index([enabled])
+}
+
+model Hotspot {
+  id          String   @id
+  ruleId      String
+  ruleName    String
+  type        String
+  query       String
+  title       String
+  summary     String
+  link        String
+  source      String
+  publishedAt DateTime
+  scannedAt   DateTime
+  aiJson      String
+  score       Float
+
+  rule Rule @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+
+  @@index([ruleName])
+  @@index([scannedAt])
+}
+
+model Notification {
+  id        String   @id
+  title     String
+  message   String
+  source    String
+  score     Float
+  reason    String
+  link      String
+  createdAt DateTime
+
+  @@index([createdAt])
+}
+
+model SeenLink {
+  id        Int      @id @default(autoincrement())
+  ruleId    String
+  link      String
+  createdAt DateTime @default(now())
+
+  @@unique([ruleId, link])
+}

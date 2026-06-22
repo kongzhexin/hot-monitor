@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>剑来热榜司</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div class="ink-bg"></div>
+    <header class="top-banner">
+      <p class="brand-sub">Jianlai Theme Hotspot Intelligence</p>
+      <h1>剑来热榜司</h1>
+      <p class="intro">监控真热点，过滤伪热度。第一时间追踪 AI 大模型与 AI 编程动态。</p>
+      <div id="health" class="health"></div>
+    </header>
+
+    <main class="grid">
+      <section class="panel">
+        <h2>立规台</h2>
+        <form id="ruleForm" class="rule-form">
+          <label>规则名<input id="name" required placeholder="例如：AI 编程新品发布" /></label>
+          <label>
+            类型
+            <select id="type">
+              <option value="keyword">关键词</option>
+              <option value="topic">范围</option>
+            </select>
+          </label>
+          <label>查询词<textarea id="query" required placeholder="例如：claude code cursor copilot"></textarea></label>
+          <label>
+            优先级
+            <select id="priority">
+              <option value="high">高</option>
+              <option value="normal" selected>普通</option>
+            </select>
+          </label>
+          <button type="submit">新增规则</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>剑谱</h2>
+          <button id="scanBtn">立即巡查</button>
+        </div>
+        <div id="ruleList" class="list"></div>
+      </section>
+
+      <section class="panel wide">
+        <h2>热榜流</h2>
+        <div id="hotspotList" class="cards"></div>
+      </section>
+
+      <section class="panel">
+        <h2>风云势</h2>
+        <div id="trendList" class="list"></div>
+      </section>
+
+      <section class="panel">
+        <h2>飞剑传书</h2>
+        <div id="notificationList" class="list"></div>
+      </section>
+    </main>
+
+    <template id="ruleTemplate">
+      <article class="card row">
+        <div>
+          <h3></h3>
+          <p class="meta"></p>
+        </div>
+        <button class="toggleBtn"></button>
+      </article>
+    </template>
+
+    <template id="hotTemplate">
+      <article class="card hot">
+        <a class="title" target="_blank" rel="noopener noreferrer"></a>
+        <p class="meta"></p>
+        <p class="reason"></p>
+      </article>
+    </template>
+
+    <template id="notifyTemplate">
+      <article class="card">
+        <h3></h3>
+        <p class="meta"></p>
+      </article>
+    </template>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>

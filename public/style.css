@@ -1,0 +1,172 @@
+:root {
+  --paper: #ede0c7;
+  --ink: #231814;
+  --jade: #355f54;
+  --amber: #c79f4a;
+  --wine: #7d1d1d;
+  --line: rgba(35, 24, 20, 0.28);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: 'ZCOOL XiaoWei', serif;
+  background:
+    radial-gradient(circle at 20% 12%, rgba(199, 159, 74, 0.27), transparent 35%),
+    radial-gradient(circle at 88% 8%, rgba(53, 95, 84, 0.24), transparent 33%),
+    linear-gradient(125deg, #f3ead5 0%, #e2d2b1 45%, #d5c09a 100%);
+}
+
+.ink-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.28;
+  background-image: repeating-linear-gradient(45deg, rgba(35, 24, 20, 0.05) 0 2px, transparent 2px 16px);
+}
+
+.top-banner {
+  position: relative;
+  text-align: center;
+  padding: 2rem 1rem 1.2rem;
+  border-bottom: 2px solid var(--line);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.06));
+}
+
+.brand-sub {
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #5c4636;
+}
+
+h1 {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: clamp(2.2rem, 4.8vw, 3.6rem);
+  margin: 0.3rem 0;
+}
+
+.intro {
+  margin: 0 auto;
+  max-width: 720px;
+}
+
+.health {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+
+.pill {
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.grid {
+  width: min(1200px, 94vw);
+  margin: 1rem auto 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+}
+
+.panel {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 0.9rem;
+  background:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.22)),
+    repeating-linear-gradient(0deg, transparent 0 28px, rgba(35, 24, 20, 0.04) 28px 29px);
+  box-shadow: 0 10px 30px rgba(35, 24, 20, 0.25);
+}
+
+.wide { grid-column: span 2; }
+
+.panel h2 {
+  margin-top: 0;
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 1.6rem;
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rule-form { display: grid; gap: 0.55rem; }
+label { display: grid; gap: 0.25rem; }
+
+input, textarea, select, button { font: inherit; }
+
+input, textarea, select {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.58rem 0.68rem;
+  background: rgba(255, 255, 255, 0.74);
+}
+
+textarea { min-height: 86px; resize: vertical; }
+
+button {
+  border: none;
+  border-radius: 10px;
+  padding: 0.55rem 0.9rem;
+  color: #f7fff9;
+  background: linear-gradient(120deg, var(--jade), #4f8778);
+  cursor: pointer;
+}
+
+button:hover { filter: brightness(1.05); }
+
+.list { display: grid; gap: 0.5rem; }
+
+.cards {
+  display: grid;
+  gap: 0.6rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  padding: 0.7rem;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  color: #2a1f1a;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.title:hover { text-decoration: underline; }
+
+.meta {
+  margin: 0.38rem 0;
+  color: #59483b;
+  font-size: 0.92rem;
+}
+
+.reason { margin: 0; color: #2f4a42; }
+
+.hot { border-left: 4px solid var(--amber); }
+.hot.high { border-left-color: var(--wine); }
+
+@media (max-width: 920px) {
+  .grid { grid-template-columns: 1fr; }
+  .wide { grid-column: span 1; }
+}

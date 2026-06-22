@@ -1,0 +1,46 @@
+{
+  "name": "hot-monitor-skills",
+  "version": "0.1.0",
+  "description": "Skills for keyword monitoring, trend discovery and event validation",
+  "baseUrlEnv": "HOT_MONITOR_BASE_URL",
+  "skills": [
+    {
+      "id": "monitor_keywords",
+      "description": "Create a keyword rule, run one scan, and return latest matched hotspots.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string" },
+          "priority": { "type": "string", "enum": ["high", "normal"] },
+          "name": { "type": "string" }
+        },
+        "required": ["query"]
+      }
+    },
+    {
+      "id": "discover_trends",
+      "description": "Run scan for enabled rules and return trend summary.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "topic": { "type": "string" }
+        }
+      }
+    },
+    {
+      "id": "validate_event",
+      "description": "Validate one candidate event against query using AI evaluation endpoint.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string" },
+          "title": { "type": "string" },
+          "summary": { "type": "string" },
+          "link": { "type": "string" },
+          "source": { "type": "string" }
+        },
+        "required": ["query", "title", "summary", "link"]
+      }
+    }
+  ]
+}

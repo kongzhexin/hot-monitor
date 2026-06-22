@@ -1,0 +1,27 @@
+{
+  "name": "hot-monitor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "test": "node --test",
+    "test:e2e": "npx playwright test",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "skills:help": "node agent-skills/skills-cli.mjs",
+    "skills:discover": "node agent-skills/skills-cli.mjs discover_trends \"AI 编程\""
+  },
+  "dependencies": {
+    "@prisma/client": "^6.9.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2",
+    "rss-parser": "^3.13.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.0",
+    "prisma": "^6.9.0"
+  }
+}
