@@ -5,11 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch src/server.js",
+    "build": "prisma generate",
+    "vercel-build": "npm run build",
+    "postinstall": "npm run prisma:generate",
     "start": "node src/server.js",
     "test": "node --test",
     "test:e2e": "npx playwright test",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
+    "prisma:migrate:deploy": "prisma migrate deploy",
     "skills:help": "node agent-skills/skills-cli.mjs",
     "skills:discover": "node agent-skills/skills-cli.mjs discover_trends \"AI 编程\""
   },
