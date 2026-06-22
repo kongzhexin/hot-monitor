@@ -1,101 +1,82 @@
 # Vercel 部署指南
 
-## 快速开始
+## 1. 概览
+本项目已经改为：
+- 使用 `PostgreSQL` 数据源（Neon / 外部数据库）
+- 在 Vercel 上通过 `api/index.js` 提供 API 服务
+- 通过 `api/cron-scan.js` 支持每天一次的定时扫描
+- 使用 `public/` 提供静态前端页面
 
-### 前置条件
-- Vercel 账户
-- GitHub 仓库（已连接）
-- 所需的环境变量
+## 2. 关键配置
 
-### 部署步骤
-
-#### 1. 连接到 Vercel
-```bash
-# 使用 Vercel CLI
-npm i -g vercel
-vercel
-```
-
-或直接在 [Vercel Dashboard](https://vercel.com/dashboard) 导入 GitHub 仓库。
-
-#### 2. 配置环境变量
-
-在 Vercel Dashboard 中，进入项目设置 → 环境变量，添加以下变量：
-
-| 变量名 | 说明 | 示例 |
-|------|------|------|
-| `DATABASE_URL` | PostgreSQL 连接字符串（Neon/外部数据库） | `postgresql://neondb_owner:<PASSWORD>@ep-icy-queen-atud3nc1.c-9.us-east-1.aws.neon.tech/neondb?sslmode=require` |
-| `OPENROUTER_API_KEY` | OpenRouter API 密钥 | `sk-or-...` |
-| `RSS_SOURCES` | RSS 源列表（JSON） | `[{"url":"https://...",...}]` |
-| `SCAN_INTERVAL_SECONDS` | 扫描间隔（秒） | `3600` |
-| `PORT` | 监听端口 | `3000` |
-
-#### 3. Vercel 命令配置
-
-在 Vercel 项目设置中配置：
-
+### Vercel 项目设置
 - Install Command: `npm install`
 - Build Command: `npm run build`
 - Development Command: `npm run dev`
 
-如果你希望在部署时自动执行数据库迁移，可以将 Build Command 改为：
-
+如果你希望把数据库迁移也放到部署流程里，Build Command 可改为：
 ```bash
 npm run build && npx prisma migrate deploy
 ```
 
-但推荐的做法是：
-1. 先部署应用
-2. 确保 `DATABASE_URL` 正确
-3. 再运行一次 `npx prisma migrate deploy`
+### Vercel 环境变量
+在 Vercel Dashboard → Settings → Environment Variables 中添加：
 
-#### 4. 数据库迁移
+| 名称 | 说明 | 示例 |
+|------|------|------|
+| `DATABASE_URL` | Neon/PostgreSQL 连接字符串 | `postgresql://neondb_owner:<PASSWORD>@ep-icy-queen-atud3nc1.c-9.us-east-1.aws.neon.tech/neondb?sslmode=require` |
+| `OPENROUTER_API_KEY` | OpenRouter API 密钥 | `sk-or-...` |
+| `RSS_SOURCES` | RSS 源列表（JSON） | `[{"name":"HackerNews","url":"https://news.ycombinator.com/rss"}]` |
+| `SCAN_INTERVAL_SECONDS` | 扫描间隔（秒） | `3600` |
 
-本项目已更新为 PostgreSQL 数据源，适合 Neon 等托管数据库。部署后，如果你愿意可以直接将迁移集成到构建流程：
+> 备注：`PORT` 不需要在 Vercel 中手动设置，Vercel 会自动管理运行端口。
 
+### Vercel 定时任务
+当前为 Hobby 账户优化为每日一次定时任务：
+```json
+"crons": [
+  {
+    "path": "/api/cron-scan",
+    "schedule": "0 0 * * *"
+  }
+]
+```
+这意味着每天 UTC 00:00 运行一次扫描，符合 Hobby 计划限制。
+
+## 3. 部署流程
+
+### 3.1 连接仓库
+- 直接在 Vercel Dashboard 中导入 GitHub 仓库
+- 或使用 Vercel CLI：
 ```bash
-npm run build && npx prisma migrate deploy
+npm i -g vercel
+vercel
 ```
 
-如果你更希望手动控制，则在首次部署后运行：
+### 3.2 运行部署
+- 在 Vercel Dashboard 中点击 Deploy：
+  - 触发 `npm install`
+  - 触发 `npm run build`
+  - 生成 Prisma Client
 
+### 3.3 运行数据库迁移
+推荐在部署完成后单独执行迁移：
 ```bash
 vercel env pull
 npx prisma migrate deploy
 ```
 
-此命令会把当前源码中的 migration 应用到远端数据库。
-
-### 数据持久化
-
-由于 Vercel 的无状态特性，SQLite 数据库需要特殊处理：
-
-**推荐方案：**
-
-1. **使用 Vercel KV 存储** (最简单)
-   - 在 Vercel Dashboard 添加 KV 存储
-   - 更新 `prisma/schema.prisma` 改用 PostgreSQL 或迁移逻辑到 KV
-
-2. **使用外部数据库** (推荐生产环境)
-   - PostgreSQL (Supabase, Neon 等)
-   - MongoDB (MongoDB Atlas)
-   
-   修改 `prisma/schema.prisma`:
-   ```prisma
-   datasource db {
-     provider = "postgresql"
-     url      = env("DATABASE_URL")
-   }
-   ```
-
-3. **使用 Vercel Blob 存储**
-   - 适合小型数据
-   - 适合备份场景
-
-### 环境变量示例
-
-创建 `.env.local`:
+如果你想让构建过程自动迁移，可以改为：
+```bash
+npm run build && npx prisma migrate deploy
 ```
+但建议先确认 `DATABASE_URL` 是否正确，再执行迁移。
+
+## 4. 本地开发与测试
+
+### 4.1 本地环境文件
+创建 `.env.local`：
+```env
 DATABASE_URL="postgresql://neondb_owner:<YOUR_PASSWORD>@ep-icy-queen-atud3nc1.c-9.us-east-1.aws.neon.tech/neondb?sslmode=require"
 OPENROUTER_API_KEY="sk-or-your-key-here"
 RSS_SOURCES='[
@@ -106,75 +87,71 @@ SCAN_INTERVAL_SECONDS=3600
 PORT=3000
 ```
 
-### 本地测试
-
+### 4.2 本地测试步骤
 ```bash
-# 安装依赖
 npm install
-
-# 生成 Prisma Client
 npm run prisma:generate
-
-# 初始化数据库
 npm run prisma:migrate
-
-# 开发模式
 npm run dev
+```
 
-# 生产模式测试
+### 4.3 生产模式测试
+```bash
 npm run build
 npm start
 ```
 
-### 故障排查
+## 5. 注意事项
 
-#### 1. 数据库连接失败
-- 检查 `DATABASE_URL` 环境变量是否正确设置
-- 确认数据库服务可访问
+### 数据库类型
+- 当前 `prisma/schema.prisma` 已使用 PostgreSQL
+- `DATABASE_URL` 不能再使用 SQLite 文件路径
+- Vercel 上强烈推荐使用外部数据库（Neon、Supabase、MongoDB Atlas）
+
+### 定时任务限制
+- Hobby 账户只能运行每日一次 cron
+- 已将 `vercel.json` 中的 cron 表达式调整为 `0 0 * * *`
+- 如果需要更频繁的调度，需要升级 Vercel Pro
+
+### 如果你使用 Vercel KV 或 Blob
+本项目当前未将数据迁移到 KV/Blob，仍然依赖 Prisma/PostgreSQL。
+如果要改成 KV/Blob，需要额外改写数据库层。
+
+## 6. 故障排查
+
+### 6.1 数据库连接失败
+- 检查 `DATABASE_URL` 是否正确
+- 确认 Neon 实例可访问
 - 查看 Vercel 函数日志
 
-#### 2. Prisma 迁移失败
+### 6.2 Prisma 迁移失败
 ```bash
 vercel env pull
 npx prisma migrate deploy --skip-generate
 ```
 
-#### 3. 内存不足
-- 减少 `SCAN_INTERVAL_SECONDS`
-- 检查定时任务是否正确清理资源
-- 使用 Vercel Pro 获得更多资源
+### 6.3 API 无响应
+- 检查 `api/index.js` 是否正常部署
+- 确认 `vercel.json` 路由配置正确
+- 访问 `https://<your-app>.vercel.app/api/health`
 
-#### 4. 静态资源 404
-- 确保 `public/` 文件夹中的资源已正确配置
-- 检查 `vercel.json` 中的路由规则
+### 6.4 静态页面 404
+- 确认 `public/index.html` 存在
+- 确保 `vercel.json` 有：
+  - `/api/*` 路由到 `api/index.js`
+  - 非 API 路由到 `public/index.html`
 
-### 监控和日志
+## 7. 日志与回滚
 
-查看实时日志：
+### 查看日志
 ```bash
 vercel logs
 ```
 
-### 回滚部署
-
+### 回滚版本
 ```bash
 vercel rollback
 ```
 
-### 自定义域名
-
-1. 在 Vercel Dashboard 添加域名
-2. 更新 DNS 记录指向 Vercel
-3. 等待 DNS 生效（通常 24 小时）
-
-### 成本优化
-
-- 使用 Vercel 免费计划的限制：100GB 带宽/月，12 个并发函数
-- 定时任务建议每小时不超过 3-4 次
-- 使用 Vercel Analytics 监控性能
-
-### 更多资源
-
-- [Vercel 文档](https://vercel.com/docs)
-- [Prisma 部署指南](https://www.prisma.io/docs/guides/deployment)
+## 8. 更多资源
 - [Express 在 Vercel 上的部署](https://vercel.com/guides/deploying-express-with-vercel)
