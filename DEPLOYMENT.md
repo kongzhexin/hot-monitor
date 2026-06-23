@@ -30,7 +30,8 @@ npm run build && npx prisma migrate deploy
 | `SCAN_INTERVAL_SECONDS` | 扫描间隔（秒） | `3600` |
 
 > 备注：`PORT` 不需要在 Vercel 中手动设置，Vercel 会自动管理运行端口。
-
+>
+> 注意：本项目不再依赖 `vercel.json` 中的 `@SECRET` 引用，环境变量应直接通过 Vercel Dashboard 设置。
 ### Vercel 定时任务
 当前为 Hobby 账户优化为每日一次定时任务：
 ```json

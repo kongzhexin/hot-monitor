@@ -31,12 +31,7 @@
       "dest": "public/index.html"
     }
   ],
-  "env": {
-    "DATABASE_URL": "${DATABASE_URL}",
-    "OPENROUTER_API_KEY": "${OPENROUTER_API_KEY}",
-    "RSS_SOURCES": "${RSS_SOURCES}",
-    "SCAN_INTERVAL_SECONDS": "${SCAN_INTERVAL_SECONDS}"
-  },
+
   "crons": [
     {
       "path": "/api/cron-scan",
