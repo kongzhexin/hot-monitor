@@ -16,6 +16,9 @@
   ],
   "routes": [
     {
+      "handle": "filesystem"
+    },
+    {
       "src": "^/api/cron-scan",
       "dest": "api/cron-scan.js"
     },
@@ -24,7 +27,7 @@
       "dest": "api/index.js"
     },
     {
-      "src": "^/(?!api)",
+      "src": "^/(.*)$",
       "dest": "public/index.html"
     }
   ],
